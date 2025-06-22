@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (risco === "Alto") {
       alerta.innerHTML = "🚨 Alerta crítico! Áreas próximas ao rio devem ser evacuadas.";
       alerta.style.background = "#ffcccc";
-    } else if (risco === "Moderado") {
+    } else if (risco === "Moderadoaaaaaaaaaaaaaaaaaaaaaaaaa") {
       alerta.innerHTML = "⚠️ Atenção: risco moderado de cheia, acompanhe novas medições.";
       alerta.style.background = "#fff5cc";
     } else {
