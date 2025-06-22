@@ -1,10 +1,46 @@
 document.addEventListener("DOMContentLoaded", () => {
   let contadorAtualizacoes = 0;
   const historico = [];
-  const intervaloAtualizacao = 10 * 1000; // 10 segundos (simulação)
+
+  const intervaloAtualizacao = 10 * 1000; // 10 segundos
+
+  // Referência para gráfico Chart.js
+  const ctx = document.getElementById("graficoNivel").getContext("2d");
+
+  const chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: [],
+      datasets: [{
+        label: "Nível do Rio (m)",
+        data: [],
+        borderColor: "#007bff",
+        backgroundColor: "rgba(0,123,255,0.1)",
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          min: 3,
+          max: 6,
+          title: {
+            display: true,
+            text: "Metros"
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Horário"
+          }
+        }
+      }
+    }
+  });
 
   function gerarNivelAleatorio() {
-    // Simula um nível do rio entre 3.2m e 5.8m
     return (Math.random() * 2.6 + 3.2).toFixed(2);
   }
 
@@ -16,31 +52,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function atualizarEstiloPagina(risco) {
     const body = document.body;
-    body.style.transition = "background-color 1s";
-
-    if (risco === "Alto") {
-      body.style.backgroundColor = "#ffcccc";
-    } else if (risco === "Moderado") {
-      body.style.backgroundColor = "#fff5cc";
-    } else {
-      body.style.backgroundColor = "#e0f7fa";
-    }
+    if (risco === "Alto") body.style.backgroundColor = "#ffcccc";
+    else if (risco === "Moderado") body.style.backgroundColor = "#fff5cc";
+    else body.style.backgroundColor = "#e0f7fa";
   }
 
   function atualizarPainel() {
     const nivel = parseFloat(gerarNivelAleatorio());
     const risco = classificarRisco(nivel);
-    const agora = new Date().toLocaleString("pt-BR", {
-      dateStyle: "short",
-      timeStyle: "short",
-    });
+    const agora = new Date().toLocaleTimeString("pt-BR");
 
+    // Atualiza texto
     document.getElementById("nivel").textContent = `${nivel} m`;
     document.getElementById("risco").textContent = risco;
     document.getElementById("atualizacao").textContent = agora;
 
-    const listaAlertas = document.getElementById("lista-alertas");
-    listaAlertas.innerHTML = "";
+    // Atualiza alertas
+    const lista = document.getElementById("lista-alertas");
+    lista.innerHTML = "";
 
     const alerta = document.createElement("li");
 
@@ -57,21 +86,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     alerta.style.padding = "0.5rem";
     alerta.style.borderLeft = "5px solid #555";
-    listaAlertas.appendChild(alerta);
+    lista.appendChild(alerta);
 
     atualizarEstiloPagina(risco);
 
-    // Armazena histórico
-    historico.push({ nivel, risco, data: agora });
-    contadorAtualizacoes++;
+    // Armazena e plota no gráfico
+    historico.push({ nivel, risco, hora: agora });
+    chart.data.labels.push(agora);
+    chart.data.datasets[0].data.push(nivel);
+    chart.update();
 
+    contadorAtualizacoes++;
     console.log(`Atualização ${contadorAtualizacoes}:`, nivel, risco, agora);
   }
 
-  // Primeira atualização imediata
-  atualizarPainel();
-
-  // Atualiza automaticamente a cada X segundos
+  atualizarPainel(); // Primeira chamada
   setInterval(atualizarPainel, intervaloAtualizacao);
 });
-
