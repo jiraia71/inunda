@@ -46,14 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function classificarRisco(nivel) {
     if (nivel >= 5.0) return "Alto";
-    if (nivel >= 4.0) return "Moderado";
+    if (nivel >= 4.0) return "Moderadoaaaaaaaaaaaaaa";
     return "Baixo";
   }
 
   function atualizarEstiloPagina(risco) {
     const body = document.body;
     if (risco === "Alto") body.style.backgroundColor = "#ffcccc";
-    else if (risco === "Moderado") body.style.backgroundColor = "#fff5cc";
+    else if (risco === "Moderadoaaaaaaaaaaaaaaa") body.style.backgroundColor = "#fff5cc";
     else body.style.backgroundColor = "#e0f7fa";
   }
 
